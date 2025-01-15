@@ -1,0 +1,90 @@
+---
+title: "FOR 591C – Hierarchical Modeling in Ecology / Introduction to Bayesian Data Analysis"
+output: html_document
+---
+
+# Course Information
+
+**Title**: HME / BDA (2 Credits)  
+**Meeting Time**: Wednesday 1:00 – 2:45pm  
+**Meeting Location**: Ag 168  
+
+## Instructor Information
+
+**Instructor**: Brent Pease  
+**Email**: [bpease1@siu.edu](mailto:bpease1@siu.edu)  
+**Office Location & Hours**: Ag 186B – [Schedule a Meeting](https://outlook.office.com/bookwithme/user/3da611d2ce874b1d9770732e6cf0632c@siu.edu/meetingtype/XtAWixY1Kkq3e3avTnnkyQ2?anonymous&ep=mlink)  
+
+## Course Overview
+
+This in-person, hands-on course focuses on modeling and coding with short lectures and discussions. Based explicitly in R, it demonstrates an applied approach to Bayesian inference of hierarchical models, with side-by-side comparisons of Classical and Bayesian analyses. While the course centers on problems in wildlife ecology, the content is transferable to other disciplines. Graduate-level statistics and R experience are beneficial but not required.
+
+## Learning Outcomes
+
+By the end of the course, students will be able to:
+
+1. Compare and contrast Bayesian and Frequentist approaches to statistical inference.
+2. Fit and interpret model output from Bayesian and Maximum Likelihood approaches.
+3. Describe hierarchical models and their need in ecology.
+4. Account for measurement error in ecological studies.
+5. Use program R routinely for data analysis.
+
+## Course Communication
+
+Course materials and assignments will be hosted on D2L. Updates will be sent via email as needed. Students are encouraged to contact the instructor directly with concerns or questions.
+
+# Suggested Texts
+
+### Books with PDFs Available:
+
+[PDF Link](https://saluki-my.sharepoint.com/:f:/g/personal/bpease1_siu_edu/EhuYpDgAdV5Gs91rYjhQrpEBQgw97pceLIP_Z3OICcg2fA?e=ZAeC7n)
+
+- Bolker, B. M. (2008). *Ecological models and data in R*. Princeton University Press.
+- Gelman, A., Carlin, J. B., Stern, H. S., & Rubin, D. B. (2013). *Bayesian data analysis (3rd Edition)*. Chapman and Hall/CRC.
+- Kéry, M. (2010). *Introduction to WinBUGS for ecologists: Bayesian approach to regression, ANOVA, mixed models and related analyses*. Academic Press.
+- Kéry, M., & Royle, J. A. (2015). *Applied Hierarchical Modeling in Ecology: Volume 1*. Academic Press.
+- Kéry, M., & Royle, J. A. (2020). *Applied Hierarchical Modeling in Ecology: Volume 2*. Academic Press.
+- Kruschke, J. (2014). *Doing Bayesian data analysis: A tutorial with R, JAGS, and Stan*.
+- McElreath, R. (2020). *Statistical rethinking: A Bayesian course with examples in R and Stan*. Chapman and Hall/CRC.
+- Royle, J. A., & Dorazio, R. M. (2008). *Hierarchical modeling and inference in ecology*. Elsevier.
+
+### Books without PDFs:
+
+- Gelman, A., & Hill, J. (2006). *Data analysis using regression and multilevel/hierarchical models*. Cambridge University Press.
+- Hobbs, N. T., & Hooten, M. B. (2015). *Bayesian Models: A statistical Primer for Ecologists*. Princeton University Press.
+- McCarthy, M. A. (2007). *Bayesian methods for ecology*. Cambridge University Press.
+
+# Course Prerequisites
+
+Graduate standing or consent of instructor.
+
+# Course Assignments
+
+This two-credit graduate course combines discussion, coding, and hands-on modeling. Students are encouraged to explore topics of interest and demonstrate their learning through participation and projects. Graded assignments will not be a focus; instead, feedback will be provided to guide learning.
+
+# Grades
+
+| Grade | Definition                |
+|-------|---------------------------|
+| A     | Excellent                |
+| B     | Good                    |
+| C     | Satisfactory            |
+| D     | Less than Satisfactory  |
+| F     | Failing                 |
+
+# Tentative Course Topics
+
+- Program R, R Studio/Posit, RMarkdown, projects, and directories
+- Introduction to Bayesian Analysis
+- MCMC
+- (Generalized) Linear Models
+- Data Simulation
+- Model Checking and Selection
+- Abundance Models (N-Mixture)
+- Occurrence Models (Site-Occupancy)
+- Community Models (Occurrence/Richness)
+
+# Additional Policies
+
+For SIU policies applicable to this and all other SIU classes, please see the following:  
+[syllabus-attachment-spring-2025.pdf](https://provost.siu.edu/_common/documents/syllabus-attachments/syllabus-attachment-spring-2025.pdf)
