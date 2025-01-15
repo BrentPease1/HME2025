@@ -64,13 +64,17 @@ This two-credit graduate course combines discussion, coding, and hands-on modeli
 
 # Grades
 
-| Grade | Definition                |
-|-------|---------------------------|
-| A     | Excellent                |
-| B     | Good                    |
-| C     | Satisfactory            |
-| D     | Less than Satisfactory  |
-| F     | Failing                 |
+<div style="text-align: center;">
+
+| **Grade** | **Definition**         |
+|-----------|------------------------|
+| A         | Excellent              |
+| B         | Good                   |
+| C         | Satisfactory           |
+| D         | Less than Satisfactory |
+| F         | Failing                |
+
+</div>
 
 # Tentative Course Topics
 
