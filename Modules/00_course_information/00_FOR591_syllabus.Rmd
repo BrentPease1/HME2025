@@ -64,7 +64,7 @@ This two-credit graduate course combines discussion, coding, and hands-on modeli
 
 # Grades
 
-<div style="text-align: center;">
+<div style="text-align: center; max-width: 600px; margin: 0 auto;">
 
 | **Grade** | **Definition**         |
 |-----------|------------------------|

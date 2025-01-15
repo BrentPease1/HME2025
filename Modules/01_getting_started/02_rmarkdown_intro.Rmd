@@ -1,6 +1,6 @@
 ---
 title: "Introduction to R Markdown"
-subtitle: "FORHME"
+subtitle: "HME"
 date: "updated on `r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
