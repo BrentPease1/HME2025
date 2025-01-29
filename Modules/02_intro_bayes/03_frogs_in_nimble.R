@@ -10,7 +10,7 @@ frog_code01 <- nimble::nimbleCode({
   prior.knowledge <- 0.5        
   
   # probability of detection is relatively high but depends on presence/absence 
-  # incorporating prior knowledge of species dectection
+  # incorporating prior knowledge of species dectection here is fine
   detect.prob <- 0.8 * presence 
   
   ## ## ## ## ## ## ## ## 
