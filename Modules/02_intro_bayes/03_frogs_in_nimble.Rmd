@@ -115,29 +115,45 @@ frog_data <- list(detected = 0)
     - e.g., the number of sites in the dataset
 
 ## Frogs at the pond: initial values
-- Initial values are random numbers that indicate where our MCMC will start. 
+- Initial values are random numbers that indicate where our MCMC will start for a random variable.
   - Important that these initial values fall within the range of possible values, which is dictated by the probability distributions the random variables take.
-- since no prior *distributions*, no starting values needed - we just have prior *probabilities* - MCMC will "start" at the prior probabilities given
+- since no prior *distributions*, no starting values are really needed - we just have prior *probabilities* - MCMC will "start" at the prior probabilities given
+- however, when we run this model, we will get a warning from nimble stating `This model is not fully initialized. This is not an error.`
+- We could make nimble happy by passing a starting guess of what the value of presence is. We have two options: 1 or 0. Either is fine, it really doesn't matter (really), and I will show you how you do not have to pick!
+  - During the demo, I will show you both approaches so you can see how nimble behaves.
+  - From the `nimble` documentation:
+
+    > "Having uninitialized nodes in a NIMBLE model can potentially cause some algorithms to fail and can lead to poor performance in others. Here are some general guidelines on how non-initialized variables can affect performance:
+    >
+    > MCMC will auto-initialize but will do so from the prior distribution. This can cause slow convergence, especially in the case of diffuse priors."
+
+```{r echo = T}
+initsList <- list(presence = rbinom(1,1,0.5))
+```
 
 
 ## Frogs at the pond: Steps needed to quickly get samples with some default settings in `NIMBLE`
 1. Write the model (as an `R` object); we already did this (`frog_code01`)
 2. Specify data and/or constants; we already did this (`frog_data`)
-3. Specify initial values; *not needed for this model*
+3. Specify initial values; we already did this (`initsList`)
 4. Bundle everything up and pass it to `nimbleMCMC`.
 
 
 ```{r echo = T}
-frog_samples01 <- nimbleMCMC(frog_code01,
+frog_samples01 <- nimbleMCMC(code = frog_code01,
                             data = frog_data,
-                            niter = 10000)
+                            inits = initsList,
+                            niter = 10000,
+                            nchain = 1,
+                            summary = T)
 
 # what did we just create?
-str(frog_samples01) #10,000 numbers with a column header of "presence"
+str(frog_samples01)
+# TWO THINGS
+# 10,000 numbers in a matrix with a column header of "presence"
+# A summary of our posterior for everything in keepers
 
-summary(frog_samples01) # point estimate nearly identical to solution found analytically 
-
-
+(frog_samples01$summary)
 # with just one chain and a quite simple model, our "model diagnostics" are a bit limited, but we'll do a full inspection once we have a bigger model
 ```
 
@@ -170,11 +186,14 @@ frog_code02 <- nimbleCode({
   }
 )
 
-frog_samples02 <- nimbleMCMC(frog_code02,
+frog_samples02 <- nimbleMCMC(code = frog_code02,
                             data = frog_data,
-                            niter = 10000)
+                            inits = initsList,
+                            niter = 10000,
+                            nchain = 1,
+                            summary = T)
 
-summary(frog_samples02) # point estimate nearly identical to solution found analytically 
+(frog_samples02$summary) # point estimate nearly identical to solution found analytically 
 ```
 
 ##  Frogs at a (poorly suited) pond

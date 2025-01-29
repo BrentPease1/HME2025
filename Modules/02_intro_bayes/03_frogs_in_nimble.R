@@ -1,5 +1,4 @@
 library(nimble)
-
 frog_code01 <- nimble::nimbleCode({
   
   ## ## ## ## ## ## ## ## 
@@ -53,19 +52,43 @@ frog_code01 <- nimble::nimbleCode({
 ##   }
 ## )
 
+# specify data
+# must match the name in the model file
 frog_data <- list(detected = 0)
 
-frog_samples01 <- nimble::nimbleMCMC(code = frog_code01,
-                            data = frog_data,
-                            niter = 10000)
+# specify initial values
+initsList <- list(presence = 1) # you can explicitly state the value
+initsList <- list(presence = rbinom(1,1,0.5)) # but this is best practice
+                                              # with the idea of not influencing 
+                                              # the result
+# tell nimble what we would like to monitor
+# that is, what parameters do we want a posterior distribution for?
+# in this example, we really only have 1 thing we care about: presence of frog
+# but we can get in the routine of doing it
+keepers <- c('presence')
+
+# package it all up
+frog_samples01 <- nimbleMCMC(code = frog_code01,
+                             data = frog_data,
+                             inits = initsList,
+                             niter = 10000,
+                             nchain = 1,
+                             monitors = keepers,
+                             summary = T)
 
 # what did we just create?
-str(frog_samples01) #10,000 numbers with a column header of "presence"
+str(frog_samples01) 
+# TWO THINGS
+# 10,000 numbers in a matrix with a column header of "presence"
+# A summary of our posterior for everything in keepers
 
-summary(frog_samples01) # point estimate nearly identical to solution found analytically 
 
 
-# with just one chain and a quite simple model, our "model diagnostics" are a bit limited, but we'll do a full inspection once we have a bigger model
+# with just one chain and a quite simple model, 
+# our "model diagnostics" are a bit limited, 
+# but we'll do a full inspection once we have a bigger model
+
+# Say it is a really great pond
 
 frog_code02 <- nimbleCode({
   
@@ -77,7 +100,7 @@ frog_code02 <- nimbleCode({
   prior.knowledge <- 0.75        
   
   # probability of detection is relatively high but depends on presence/absence 
-  # incorporating prior knowledge of species dectection
+  # incorporating prior knowledge of species detection
   detect.prob <- 0.8 * presence 
   
   ## ## ## ## ## ## ## ## 
