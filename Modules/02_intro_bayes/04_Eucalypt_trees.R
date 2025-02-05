@@ -152,34 +152,6 @@ library(mcmcplots)
 mcmcplot(samples$samples, dir = here::here('Modules/02_Intro_Bayes/output'), filename = "tree_model01")
 
 
-## ----analytically, echo = T--------------------------------------------------------------------------------------------
-tree_diameter <- c(42,43,58,70,47,51,85,63,58,46)
-
-posterior_mean <- function(prior_mean, prior_var, data_mean, data_var, n){
-  ((prior_mean / prior_var) + (data_mean*(n / data_var))) / ((1/prior_var) + (n/data_var))
-}
-
-posterior_var <- function(prior_var, data_var, n){
-  (prior_var * (data_var / n)) / ((data_var / n) + prior_var)
-}
-
-# posterior mean
-print(paste("posterior mean:", round(posterior_mean(prior_mean = 53, prior_var = 5^2, data_mean = mean(tree_diameter), data_var = var(tree_diameter), n = length(tree_diameter)),2)))
-
-# posterior variance
-print(paste("posterior variance:", round(posterior_var(prior_var = 5^2, data_var = var(tree_diameter), n = length(tree_diameter)),2)))
-
-# posterior SD, since it is reported
-print(paste("posterior SD:", round(sqrt(posterior_var(prior_var = 5^2, data_var = var(tree_diameter), n = length(tree_diameter))),2)))
-
-# posterior 95% CI is same as nimble
-print(paste("posterior 95% CI:", 
-            round(posterior_mean(prior_mean = 53, prior_var = 5^2, data_mean = mean(tree_diameter), data_var = var(tree_diameter), n = length(tree_diameter)),1) - 
-              1.96 * round(sqrt(posterior_var(prior_var = 5^2, data_var = var(tree_diameter), n = length(tree_diameter))),1), "-",
-            round(posterior_mean(prior_mean = 53, prior_var = 5^2, data_mean = mean(tree_diameter), data_var = var(tree_diameter), n = length(tree_diameter)),1) + 
-              1.96 * round(sqrt(posterior_var(prior_var = 5^2, data_var = var(tree_diameter), n = length(tree_diameter))),1)
-              ))
-
 
 ## ----uniform, echo = T-------------------------------------------------------------------------------------------------
 tree_model02 <- nimbleCode({
