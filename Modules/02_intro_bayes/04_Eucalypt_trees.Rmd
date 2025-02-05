@@ -1,6 +1,6 @@
 ---
 title: "Estimating a Population Mean"
-subtitle: "HEM 2025"
+subtitle: "HME Spr 2025"
 date: "updated on `r Sys.Date()`"
 output: slidy_presentation
 editor_options: 
@@ -41,25 +41,25 @@ knitr::include_graphics(here::here('Modules/02_Intro_Bayes/files_for_slides/tree
     remnant patch of eucalyptus trees.
 -   Important for nutrient dynamics, provision of habitat for animals,
     nectar, mitigation of temperature extremes,etc.
--   Same researcher has studied this species in other remnant patches
-    and documented an average diameter of 53 cm with a standard
-    deviation of about 5cm.
-    -   Therefore, prior to collecting new data, there is a 95% chance
-        of mean diameter between 43 - 63cm (mean + 1.96\*sd)
-    -   This is "prior knowledge"!
-    -   how could we formulate this into a **prior distribution**?
 
-## The Model of the Mean
 
 ```{r data, echo = T}
 # here is our dataset
 
 tree_diameter <- c(42,43,58,70,47,51,85,63,58,46)
 ```
+    
+## The Model of the Mean
+-   Same researcher has studied this species in other remnant patches
+    and documented an average diameter of 53 cm with a standard
+    deviation of about 5cm.
+    -   Therefore, prior to collecting new data, we can use this information to think about the expected distribution of tree diameter of mean diameter (e.g., between 43 - 63cm (mean + 1.96\*sd))
+    -   This is "prior knowledge"!
+    -   how could we formulate this into a **prior distribution**?
 
 ## The Model of the Mean
 
--   Unlike the frog example, here we will have prior **distributions**
+-   Unlike the frog example in which we explicitly assigned a value to the prior (e.g., 0.5), here we will have prior **distributions**
     that we are taking draws from.
     -   We will explore "informative" and "uninformative" priors
 -   We will also use multiple chains in our MCMC, which will fully
@@ -86,7 +86,7 @@ Probably something like `mean(data)` and maybe `var(data)` or
 
 ```
 
-What I asked you to use a model to estimate the mean and the standard
+What if I asked you to use a model to estimate the mean and the standard
 error of a dataset - how could you do this?    
 
 Although you might not think
@@ -118,7 +118,9 @@ Steps to our analysis:
 
 What does a model look like for this?
 
-```{r model01, echo = T}
+## The Model of the Mean
+
+```{r model01, echo = T, warning=F}
 library(nimble)
 
 tree_model01 <- nimbleCode({
@@ -187,7 +189,7 @@ keepers <- c('pop.mean', 'pop.sd') # do we really need to monitor pop.sd?
 # MCMC settings
 nc = 3 # why chains
 nb = 1000 # Why burn-ins
-ni = nb + 2000 # why inits
+ni = nb + 2000 # why iterations
 nt = 1 # why thinning
 
 
@@ -269,54 +271,11 @@ getValues(pop.sd)
 
 # MCMCplots is nice too
 library(mcmcplots)
-mcmcplot(samples$samples, dir = here::here('Modules/02_Intro_Bayes/output'), filename = "tree_model01")
+mcmcplot(samples$samples, dir = here::here('Modules/02_Intro_Bayes/files_for_slides'), filename = "tree_model01")
 ```
 
-MCMCplots Results [here](output/tree_model01.html)
+MCMCplots Results [here](files_for_slides/tree_model01.html)
 
-## Estimating mean for a normal distribution analytically
-
--   When the data and the prior have normal distributions, the posterior
-    distribution is also a normally distributed random variable
-    -   the mean and variance of the posterior depends on the mean and
-        variance of the prior as well as the sample size of the current
-        dataset, as well as the mean and variance of the data
--   Following Gelfand et al. 2004, the mean and variance of the
-    posterior can be calculated analytically
-    $$\mu_{post} = \frac{\mu_{prior}/\sigma^2_{prior} + \mu_{data} n/\sigma^2_{data}}{1/\sigma^2_{prior} + n/\sigma^2_{data}}$$
-    and
-    $$\sigma^2_{post} = \frac{\sigma^2_{prior}\sigma^2_{data}/n}{\sigma^2_{data}/n +\sigma^2_{prior}}$$
-
-Let's write some R functions and calculate these analytically
-
-```{r analytically, echo = T}
-tree_diameter <- c(42,43,58,70,47,51,85,63,58,46)
-
-posterior_mean <- function(prior_mean, prior_var, data_mean, data_var, n){
-  ((prior_mean / prior_var) + (data_mean*(n / data_var))) / ((1/prior_var) + (n/data_var))
-}
-
-posterior_var <- function(prior_var, data_var, n){
-  (prior_var * (data_var / n)) / ((data_var / n) + prior_var)
-}
-
-# posterior mean
-print(paste("posterior mean:", round(posterior_mean(prior_mean = 53, prior_var = 5^2, data_mean = mean(tree_diameter), data_var = var(tree_diameter), n = length(tree_diameter)),2)))
-
-# posterior variance
-print(paste("posterior variance:", round(posterior_var(prior_var = 5^2, data_var = var(tree_diameter), n = length(tree_diameter)),2)))
-
-# posterior SD, since it is reported
-print(paste("posterior SD:", round(sqrt(posterior_var(prior_var = 5^2, data_var = var(tree_diameter), n = length(tree_diameter))),2)))
-
-# posterior 95% CI is same as nimble
-print(paste("posterior 95% CI:", 
-            round(posterior_mean(prior_mean = 53, prior_var = 5^2, data_mean = mean(tree_diameter), data_var = var(tree_diameter), n = length(tree_diameter)),1) - 
-              1.96 * round(sqrt(posterior_var(prior_var = 5^2, data_var = var(tree_diameter), n = length(tree_diameter))),1), "-",
-            round(posterior_mean(prior_mean = 53, prior_var = 5^2, data_mean = mean(tree_diameter), data_var = var(tree_diameter), n = length(tree_diameter)),1) + 
-              1.96 * round(sqrt(posterior_var(prior_var = 5^2, data_var = var(tree_diameter), n = length(tree_diameter))),1)
-              ))
-```
 
 ## The Model of the Mean
 
@@ -443,10 +402,10 @@ getValues(pop.sd)
 
 # MCMCplots is nice too
 library(mcmcplots)
-mcmcplot(samples02$samples, dir = here::here('Modules/02_Intro_Bayes/output'), filename = "tree_model02")
+mcmcplot(samples02$samples, dir = here::here('Modules/02_Intro_Bayes/files_for_slides'), filename = "tree_model02")
 ```
 
-MCMCplots Results [here](output/tree_model02.html)
+MCMCplots Results [here](files_for_slides/tree_model02.html)
 
 ## What just happened?
 
@@ -548,11 +507,11 @@ getValues(pop.sd)
 
 # MCMCplots is nice too
 library(mcmcplots)
-mcmcplot(samples03$samples, dir = here::here('Modules/02_Intro_Bayes/output'), filename = "tree_model03")
+mcmcplot(samples03$samples, dir = here::here('Modules/02_Intro_Bayes/files_for_slides'), filename = "tree_model03")
 
 ```
 
-MCMCplots Results [here](output/tree_model03.html)
+MCMCplots Results [here](files_for_slides/tree_model03.html)
 
 ## What just happened?
 
@@ -574,7 +533,7 @@ tree_model04 <- nimbleCode({
   pop.mean ~ dnorm(0, sd = 100) # still flat 'uninformative', but draws from a random normal
   
   # to set up the standard deviation, we need to make sure that the values are not negative.
-  # If you rememeber, a gamma distribution has support from 0 -> Inf. This is a good choice.
+  # If you remember, a gamma distribution has support from 0 -> Inf. This is a good choice.
   # we'll set the gamma on the precision term and then transform that to something more natural to us - the std. dev. 
   prec ~ dgamma(0.1, 0.1)
   pop.sd <- 1/sqrt(prec)
@@ -634,11 +593,11 @@ coda::traceplot(samples_mcmc[, 1:2])
 coda::gelman.diag(samples_mcmc) # we can now look at both mean and sd
 
 library(mcmcplots)
-mcmcplot(samples04$samples, dir = here::here('Modules/02_Intro_Bayes/output'), filename = "tree_model04")
+mcmcplot(samples04$samples, dir = here::here('Modules/02_Intro_Bayes/files_for_slides'), filename = "tree_model04")
 
 ```
 
-MCMCplots Results [here](output/tree_model04.html)
+MCMCplots Results [here](files_for_slides/tree_model04.html)
 
 ## What just happened?
 
@@ -652,7 +611,7 @@ MCMCplots Results [here](output/tree_model04.html)
 ## Your turn! Estimating a Population Mean - Male Peregrine Falcons
 
 ```{r falcon, out.width='50%', fig.align='center', fig.cap='', warning = F, message = F}
-knitr::include_graphics(here::here('Modules/02_Intro_Bayes/slide_supps/falcon.jpg'))
+knitr::include_graphics(here::here('Modules/02_Intro_Bayes/files_for_slides/falcon.jpg'))
 ```
 
 White (1968) provides information of the weight of 12 adult male
@@ -675,6 +634,6 @@ peregrines <- c(616, 653, 658, 608, 575, 621, 583, 602, 581, 604, 584, 604)
 ```
 
 ```{r scipt, echo = F}
-# knitr::purl(input = here::here('Modules/02_Intro_Bayes/02_Eucalypt_trees.Rmd'),
-#             output = here::here('Modules/02_Intro_Bayes/02_Eucalypt_trees.R'))
+# knitr::purl(input = here::here('Modules/02_Intro_Bayes/04_Eucalypt_trees.Rmd'),
+#             output = here::here('Modules/02_Intro_Bayes/04_Eucalypt_trees.R'))
 ```

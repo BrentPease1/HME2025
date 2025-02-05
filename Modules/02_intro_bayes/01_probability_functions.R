@@ -2,7 +2,7 @@
 # Code adapted from Jack Weiss's courses at UNC
 
 # What is your favorite continuous number between -4 and 4? 
-fav_value <- -2.3 # let's all start with 2, then play around after we discuss
+fav_value <- 2 # let's all start with 2, then play around after we discuss
 
 # (after you set your fav_value, just Source the script)
 

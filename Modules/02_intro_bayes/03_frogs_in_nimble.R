@@ -81,7 +81,7 @@ str(frog_samples01)
 # TWO THINGS
 # 10,000 numbers in a matrix with a column header of "presence"
 # A summary of our posterior for everything in keepers
-
+frog_samples01$summary
 
 
 # with just one chain and a quite simple model, 
