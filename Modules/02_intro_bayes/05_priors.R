@@ -1,8 +1,8 @@
-## ----setup, include=FALSE----------------------------------------------------------------------------
+## ----include=FALSE------------------------------------------------------------
 knitr::opts_chunk$set(echo = FALSE)
 
 
-## ----fig.height=5, fig.width=8, message=F, warning=F-------------------------------------------------
+## ----fig.height=5, fig.width=8, message=F, warning=F--------------------------
 library(ggplot2)
 library(dplyr)
 library(colorspace)
@@ -22,7 +22,7 @@ ggplot(unf_df, aes(x, y)) + geom_area(fill = "#660000",
 
 
 
-## ----fig.height=5, fig.width=8-----------------------------------------------------------------------
+## ----fig.height=5, fig.width=8------------------------------------------------
 beta_df <- data.frame(x = seq(0,1,0.01),
                       y = dbeta(seq(0,1,0.01), 1, 1))
 
@@ -37,7 +37,7 @@ ggplot(beta_df, aes(x, y)) + geom_area(fill = "#660000",
 
 
 
-## ----fig.width=8, fig.height=5-----------------------------------------------------------------------
+## ----fig.width=8, fig.height=5------------------------------------------------
 norm_df <- data.frame(x = seq(-1000,1000,1),
                       y = dnorm(seq(-1000,1000,1), 0, 100))
 
@@ -51,7 +51,7 @@ ggplot(norm_df, aes(x, y)) + geom_area(fill = "#660000",
         plot.subtitle = element_text(size = 18))
 
 
-## ----fig.width=8, fig.height=5-----------------------------------------------------------------------
+## ----fig.width=8, fig.height=5------------------------------------------------
 norm_df <- data.frame(x = seq(-10,10,1),
                       y = dnorm(seq(-10,10,1), 0, 100))
 
@@ -65,7 +65,7 @@ ggplot(norm_df, aes(x, y)) + geom_area(fill = "#660000",
         plot.subtitle = element_text(size = 18))
 
 
-## ----fig.width=8, fig.height=5-----------------------------------------------------------------------
+## ----fig.width=8, fig.height=5------------------------------------------------
 library(cowplot)
 library(ggplot2)
 norm_df <- data.frame(x = seq(-1000,1000,1),
@@ -93,7 +93,7 @@ b <- ggplot(norm_df, aes(x, y)) + geom_area(fill = "#660000",
 plot_grid(plotlist = list(a,b), nrow = 1)
 
 
-## ----fig.width=8, fig.height=5-----------------------------------------------------------------------
+## ----fig.width=8, fig.height=5------------------------------------------------
 unif_df <- data.frame(x = seq(0.1, 50, 0.1),
                       y = dunif(seq(0.1, 50, 0.1), min = 0.1, max = 50))
 a <- ggplot(unif_df, aes(x, y)) + geom_area(fill = "#660000",  
@@ -120,7 +120,7 @@ b <- ggplot(gamma_df, aes(x, y)) + geom_area(fill = "#660000",
 plot_grid(plotlist = list(a,b), nrow = 1)
 
 
-## ----warning=FALSE-----------------------------------------------------------------------------------
+## ----warning=FALSE------------------------------------------------------------
 par(mfrow = c(1,4))
 aa <- c(1,2,5,20)
 bb <- c(1,5,2,1)
@@ -151,7 +151,7 @@ for(i in 1:length(aa)){
 
 
 
-## ----------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 conjugates <- data.frame(Likelihood = c("$y_i \\sim binomial(n, p)$",
                                         "$y_i \\sim Bernoulli(p)$",
                                         "$y_i \\sim Poisson(\\lambda)$"),
@@ -165,7 +165,7 @@ conjugates <- data.frame(Likelihood = c("$y_i \\sim binomial(n, p)$",
 kableExtra::kable(conjugates, "latex", align="c", booktabs=TRUE, escape = F, caption = 'A few conjugate distributions', format = "html")
 
 
-## ----warning=F---------------------------------------------------------------------------------------
+## ----warning=F----------------------------------------------------------------
 par(mfrow = c(1,1))
 library(ggplot2)
 set.seed(2756)
@@ -190,7 +190,7 @@ b <- ggplot(data = transform_df, aes(x = logit_psi)) +
 plot_grid(plotlist = list(a,b), nrow = 1)
 
 
-## ----fig.width=5, fig.height=3-----------------------------------------------------------------------
+## ----fig.width=5, fig.height=3------------------------------------------------
 p <- seq(0,1,0.01)
 df <- data.frame(p = p, 
                  Density = c(dbeta(p, 80, 80), dbeta(p, 3,2)),
@@ -203,7 +203,7 @@ ggplot(df, aes(x = p, y = Density, color = parameter)) + geom_path() +
   annotate("text", x = 0.75, y = 2.5, label = "beta(3,2)", size = 5, color = "#660000")
 
 
-## ----scipt, echo = F---------------------------------------------------------------------------------
+## ----echo = F-----------------------------------------------------------------
 knitr::purl(input = here::here('Modules/02_intro_bayes/05_priors.Rmd'),
             output = here::here('Modules/02_intro_bayes/05_priors.R'))
 

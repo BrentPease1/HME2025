@@ -1,6 +1,6 @@
 ---
 title: "More about Prior Distributions"
-subtitle: "FORHME"
+subtitle: "HME Spring 2025"
 date: "updated on `r Sys.Date()`"
 output: slidy_presentation
 editor_options: 
@@ -15,7 +15,7 @@ slides > slide {
 }
 </style>
 
-```{r setup, include=FALSE}
+```{r, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
@@ -544,7 +544,7 @@ Including information about either $N$ or $p$ via an informative prior can help 
 
 > Does changing the prior change your posterior inference? If not, don't sweat it. If it does, you'll need to return to point 2 and justify your prior choice  
  
-```{r scipt, echo = F}
+```{r, echo = F}
 knitr::purl(input = here::here('Modules/02_intro_bayes/05_priors.Rmd'),
             output = here::here('Modules/02_intro_bayes/05_priors.R'))
 ```
