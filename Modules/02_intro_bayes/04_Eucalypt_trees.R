@@ -149,7 +149,7 @@ getValues(pop.sd)
 
 # MCMCplots is nice too
 library(mcmcplots)
-mcmcplot(samples$samples, dir = here::here('Modules/02_Intro_Bayes/output'), filename = "tree_model01")
+mcmcplot(samples$samples, dir = here::here('Modules/02_Intro_Bayes/files_for_slides'), filename = "tree_model01")
 
 
 
@@ -161,11 +161,7 @@ tree_model02 <- nimbleCode({
 
   pop.sd ~ dunif(0, 100) # the pop.sd has an equal probability of being any number between 0 and 100
   
-  # NOTE: before nimble, had to do something like this:
-  # pop.sd ~ dunif(0, 100)
-  # pop.var <- pop.sd * pop.sd
-  # pop.prec <- 1/pop.var # pass pop.prec to dnorm below
-  
+
   # likelihood
   for(i in 1:nObs){
     tree[i] ~ dnorm(pop.mean, sd = pop.sd) 
@@ -217,9 +213,6 @@ samples02 <- nimbleMCMC(
 
 
 
-## ----uniform output, echo = T------------------------------------------------------------------------------------------
-# First, "Summary" gives us some simple stuff
-samples02$summary$all.chains
 
 # .......................................................................
 # INSPECT RESULTS
@@ -239,11 +232,10 @@ coda::gelman.diag(samples_mcmc) # we can now look at both mean and sd
 
 # extract mean and SD lambda of each grid cell
 
-samplesdf <- do.call(rbind, samples_mcmc)
-pop.mean <- samplesdf[, 1]
-pop.sd <- samplesdf[, 2]
-getValues(pop.mean)
-getValues(pop.sd)
+## ----uniform output, echo = T------------------------------------------------------------------------------------------
+# First, "Summary" gives us some simple stuff
+samples02$summary$all.chains
+
 
 # MCMCplots is nice too
 library(mcmcplots)
