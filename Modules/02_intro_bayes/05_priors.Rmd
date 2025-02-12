@@ -265,39 +265,6 @@ for(i in 1:length(aa)){
 
 ```
 
-  
-  
-## Conjugate priors
-
-It turns out when we have binomial likelihood and a beta prior, the posterior distribution will also be a beta distribution  
-
-This scenario, when the prior and the posterior have the same distribution, occurs when the likelihood and prior are **conjugate** distributions. 
-
-```{r}
-conjugates <- data.frame(Likelihood = c("$y_i \\sim binomial(n, p)$",
-                                        "$y_i \\sim Bernoulli(p)$",
-                                        "$y_i \\sim Poisson(\\lambda)$"),
-                         Prior = c(c("$p \\sim beta(\\alpha, \\beta)$",
-                                        "$p \\sim beta(\\alpha, \\beta)$",
-                                        "$\\lambda \\sim gamma(\\alpha, \\beta)$")),
-                         Posterior = c("$p \\sim beta(\\sum y_i + \\alpha, n -\\sum y_i + \\beta)$",
-                                        "$p \\sim beta(\\sum_{i=1}^n y_i + \\alpha, \\sum_{i=1}^n (1-y_i) + \\beta)$",
-                                        "$\\lambda \\sim gamma(\\alpha \\sum_{i=1}^n y_i, \\beta + n)$"))
-
-kableExtra::kable(conjugates, "latex", align="c", booktabs=TRUE, escape = F, caption = 'A few conjugate distributions', format = "html")
-```
-
-## Conjugate priors
-
-Conjugate distributions are useful because we can estimate the posterior distribution algebraically. For example, assuming a prior of $Beta(1,1)$, the posterior distribution for $p$ is:
-
-$$beta(a + y, b+ n-y)$$, where
-a = 1 (from the prior), b = 1 (from the prior), y = 2 (survived), n - y = 8 (died)
-<br/>
-Substituting the values,
-$$beta(1+2, 1 + (10-2)) = beta(3, 9)$$
-This means that after observing the data, the updated belief about the surival probability follows a beta(3,9), with an expected value of $p = 0.25$
-
 
 ## Practical considerations with priors   
 
@@ -341,6 +308,42 @@ b <- ggplot(data = transform_df, aes(x = logit_psi)) +
 plot_grid(plotlist = list(a,b), nrow = 1)
 ```
     
+## (QUICKLY!) Conjugate priors
+- Banner et al. 2020 defined and discussed conjugate priors: 
+> "A prior distribution that has the same distributional form as the posterior distribution" 
+
+-A very common example is the beta-binomial distribtion. 
+-It turns out when we have binomial likelihood and a beta prior, the posterior distribution will also be a beta distribution  
+
+This scenario, when the prior and the posterior have the same distribution, occurs when the likelihood and prior are **conjugate** distributions. 
+
+```{r}
+conjugates <- data.frame(Likelihood = c("$y_i \\sim binomial(n, p)$",
+                                        "$y_i \\sim Bernoulli(p)$",
+                                        "$y_i \\sim Poisson(\\lambda)$"),
+                         Prior = c(c("$p \\sim beta(\\alpha, \\beta)$",
+                                        "$p \\sim beta(\\alpha, \\beta)$",
+                                        "$\\lambda \\sim gamma(\\alpha, \\beta)$")),
+                         Posterior = c("$p \\sim beta(\\sum y_i + \\alpha, n -\\sum y_i + \\beta)$",
+                                        "$p \\sim beta(\\sum_{i=1}^n y_i + \\alpha, \\sum_{i=1}^n (1-y_i) + \\beta)$",
+                                        "$\\lambda \\sim gamma(\\alpha \\sum_{i=1}^n y_i, \\beta + n)$"))
+
+kableExtra::kable(conjugates, "latex", align="c", booktabs=TRUE, escape = F, caption = 'A few conjugate distributions', format = "html")
+```
+
+## (QUICKLY!) Conjugate priors
+
+Conjugate distributions are useful because we can estimate the posterior distribution algebraically. For example, assuming a prior of $Beta(1,1)$, the posterior distribution for $p$ is:
+
+$$beta(a + y, b+ n-y)$$, where
+a = 1 (from the prior), b = 1 (from the prior), y = 2 (survived), n - y = 8 (died)
+<br/>
+Substituting the values,
+$$beta(1+2, 1 + (10-2)) = beta(3, 9)$$
+This means that after observing the data, the updated belief about the surival probability follows a beta(3,9), with an expected value of $p = 0.25$
+
+In practice, though, with particularly difficult problems, model convergence, and the speed at which we iterate through the MCMC, will improve/increase when we have nice, conjugate priors in the model.
+
 ## Philosophical issues with non-informative priors     
 
 - Aside from the practical issues, there are several philosophical issues regarding the use of non-informative priors.  
@@ -544,7 +547,7 @@ Including information about either $N$ or $p$ via an informative prior can help 
 
 > Does changing the prior change your posterior inference? If not, don't sweat it. If it does, you'll need to return to point 2 and justify your prior choice  
  
-```{r, echo = F}
-knitr::purl(input = here::here('Modules/02_intro_bayes/05_priors.Rmd'),
-            output = here::here('Modules/02_intro_bayes/05_priors.R'))
+```{r message=F,echo = F}
+# knitr::purl(input = here::here('Modules/02_intro_bayes/05_priors.Rmd'),
+#             output = here::here('Modules/02_intro_bayes/05_priors.R'))
 ```

@@ -151,20 +151,6 @@ for(i in 1:length(aa)){
 
 
 
-## -----------------------------------------------------------------------------
-conjugates <- data.frame(Likelihood = c("$y_i \\sim binomial(n, p)$",
-                                        "$y_i \\sim Bernoulli(p)$",
-                                        "$y_i \\sim Poisson(\\lambda)$"),
-                         Prior = c(c("$p \\sim beta(\\alpha, \\beta)$",
-                                        "$p \\sim beta(\\alpha, \\beta)$",
-                                        "$\\lambda \\sim gamma(\\alpha, \\beta)$")),
-                         Posterior = c("$p \\sim beta(\\sum y_i + \\alpha, n -\\sum y_i + \\beta)$",
-                                        "$p \\sim beta(\\sum_{i=1}^n y_i + \\alpha, \\sum_{i=1}^n (1-y_i) + \\beta)$",
-                                        "$\\lambda \\sim gamma(\\alpha \\sum_{i=1}^n y_i, \\beta + n)$"))
-
-kableExtra::kable(conjugates, "latex", align="c", booktabs=TRUE, escape = F, caption = 'A few conjugate distributions', format = "html")
-
-
 ## ----warning=F----------------------------------------------------------------
 par(mfrow = c(1,1))
 library(ggplot2)
@@ -190,6 +176,20 @@ b <- ggplot(data = transform_df, aes(x = logit_psi)) +
 plot_grid(plotlist = list(a,b), nrow = 1)
 
 
+## -----------------------------------------------------------------------------
+conjugates <- data.frame(Likelihood = c("$y_i \\sim binomial(n, p)$",
+                                        "$y_i \\sim Bernoulli(p)$",
+                                        "$y_i \\sim Poisson(\\lambda)$"),
+                         Prior = c(c("$p \\sim beta(\\alpha, \\beta)$",
+                                        "$p \\sim beta(\\alpha, \\beta)$",
+                                        "$\\lambda \\sim gamma(\\alpha, \\beta)$")),
+                         Posterior = c("$p \\sim beta(\\sum y_i + \\alpha, n -\\sum y_i + \\beta)$",
+                                        "$p \\sim beta(\\sum_{i=1}^n y_i + \\alpha, \\sum_{i=1}^n (1-y_i) + \\beta)$",
+                                        "$\\lambda \\sim gamma(\\alpha \\sum_{i=1}^n y_i, \\beta + n)$"))
+
+kableExtra::kable(conjugates, "latex", align="c", booktabs=TRUE, escape = F, caption = 'A few conjugate distributions', format = "html")
+
+
 ## ----fig.width=5, fig.height=3------------------------------------------------
 p <- seq(0,1,0.01)
 df <- data.frame(p = p, 
@@ -203,7 +203,7 @@ ggplot(df, aes(x = p, y = Density, color = parameter)) + geom_path() +
   annotate("text", x = 0.75, y = 2.5, label = "beta(3,2)", size = 5, color = "#660000")
 
 
-## ----echo = F-----------------------------------------------------------------
+## ----message=F,echo = F-------------------------------------------------------
 knitr::purl(input = here::here('Modules/02_intro_bayes/05_priors.Rmd'),
             output = here::here('Modules/02_intro_bayes/05_priors.R'))
 
