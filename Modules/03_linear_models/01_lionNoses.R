@@ -44,6 +44,8 @@ summary(lm.noses)
 
 # CHECK: WHAT DO REGRESSION COEFFICIENTS MEAN?
 
+
+
 # Maybe easier to interpret unit change with percentages?
 LionNoses$percentage.black <- LionNoses$proportion.black*100
 lm.noses2<-lm(age ~ percentage.black, data=LionNoses)
@@ -114,9 +116,10 @@ str(samples_mcmc)
 plot_mcmc_density(samples_mcmc)
 
 
-
+## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 # HOW DO WE DO MODEL CHECKING?                                              ####
+## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 # In Freq, we were taught to review residual diagnostic plots for linear regression
@@ -309,8 +312,12 @@ WVPlots::ShadedDensity(frame = fit.stats,
   annotate("text", x=-40, y = 0.005,
            label="Better fit to simulated data")
 
-
+## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 # MODEL PREDICTIONS                                                         ####
+## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
 # lastly, we can easily get predictions from nimble (or any software, really) with
 # a few additional lines of code
 # WE just need to pass in the values that we want to make predictions
