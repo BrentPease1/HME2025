@@ -426,3 +426,103 @@ ggplot(mcmc_plot, aes(x = pred.black, y = mean.pred)) +
   theme(axis.text = element_text(size = 12),
         axis.title = element_text(size = 14))+
   labs(x = "Percent Black Pigmentation in Nose", y = "Predicted Age")
+
+## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+# Stone age robustness analysis
+## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+# too long of a name
+lion <- LionNoses
+rm(LionNoses)
+
+# Set up our priors for the robustness analysis
+priors <- list(
+  list(beta_prior_mean = 0, beta_prior_sd = 10),  # Weak prior
+  list(beta_prior_mean = 0, beta_prior_sd = 1),   # Moderate prior
+  list(beta_prior_mean = 1, beta_prior_sd = 0.5)  # Strong, positive prior
+)
+
+# specify response variable
+nimData <- list(y = LionNoses$age)
+
+# monitors
+keepers <- c('B0', 'B1', 'sig')
+
+# MCMC Settings
+nc = 3
+nb = 200
+ni = 2000 + nb
+nt = 1
+
+
+# specify our basic number
+# but generalize the priors on the regression coefficients
+# we'll pass those in as constants
+m1 <- nimbleCode({
+  
+  # priors
+  B0 ~ dnorm(mean = prior_mean, sd = prior_sd)
+  B1 ~ dnorm(mean = prior_mean, sd = prior_sd)
+  tau ~ dgamma(1,1)
+  sig <- sqrt(1/tau)
+  
+  # likelihood
+  for(i in 1:nObs){
+    y[i] ~ dnorm(mean = mu[i], sd = sig)
+    mu[i] <- B0 + B1*percentage.black[i]
+  }
+  
+})
+
+#
+holder <- list()
+
+for(i in 1:length(priors)){
+  nimConsts <- list(nObs = nrow(lion),
+                    percentage.black = lion$percentage.black,
+                    prior_mean = priors[[i]]$beta_prior_mean,
+                    prior_sd = priors[[i]]$beta_prior_sd)
+  
+  nimInits <- list(B0 = rnorm(1,nimConsts$prior_mean,nimConsts$prior_sd),
+                   B1 = rnorm(1,nimConsts$prior_mean,nimConsts$prior_sd),
+                   tau = rgamma(1,1,1))
+  
+  # get posteriors
+  holder[[i]] <- nimbleMCMC(code = m1,
+                            constants = nimConsts,
+                            data = nimData,
+                            inits = nimInits,
+                            monitors = keepers,
+                            niter = ni,
+                            nburnin = nb,
+                            thin = nt,
+                            nchains = nc)
+}
+
+mcmc_summary1 <- MCMCsummary(object = holder[[1]], round = 2, params = c('B0', 'B1', 'sig'))
+mcmc_summary2 <- MCMCsummary(object =  holder[[2]], round = 2, params = c('B0', 'B1', 'sig'))
+mcmc_summary3 <- MCMCsummary(object =  holder[[3]], round = 2, params = c('B0', 'B1', 'sig'))
+
+# plot relationship
+
+# pull out some values from mcmc_summary
+mcmc_plot <- data.frame(B1_mean = c(mcmc_summary1['B1','mean'], 
+                                    mcmc_summary2['B1','mean'],
+                                    mcmc_summary3['B1','mean']),
+                        B1_lci = c(mcmc_summary1['B1','2.5%'], 
+                                   mcmc_summary2['B1','2.5%'],
+                                   mcmc_summary3['B1','2.5%']),
+                        B1_uci = c(mcmc_summary1['B1','97.5%'], 
+                                   mcmc_summary2['B1','97.5%'],
+                                   mcmc_summary3['B1','97.5%']),
+                        Priors = c('Weak', 'Moderate', 'Highly'))
+
+ggplot(mcmc_plot, aes(x = Priors, y = B1_mean)) +
+  geom_point(size = 3) +  
+  geom_errorbar(aes(ymin = B1_lci, ymax = B1_uci), width = 0.2) +
+  theme_classic() +
+  labs(x = "Priors", y = "Estimate (95% CI)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
