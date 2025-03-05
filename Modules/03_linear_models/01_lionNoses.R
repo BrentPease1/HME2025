@@ -84,9 +84,9 @@ keepers <- c('B0', 'B1', 'sig')
 
 # MCMC Settings
 nc = 3
-nb = 200
-ni = 2000 + nb
-nt = 1
+nb = 200000
+ni = 1000000 + nb
+nt = 200
 
 # get posteriors
 nim.noses <- nimbleMCMC(code = m1,
@@ -113,7 +113,7 @@ MCMCvis::MCMCsummary(samples_mcmc)
 # MCMCPLOTS STYLE DENSITY PLOTS
 # it is important to remember that we have many samples from the posterior for each parameter
 str(samples_mcmc)
-plot_mcmc_density(samples_mcmc)
+#plot_mcmc_density(samples_mcmc)
 
 
 ## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -126,7 +126,7 @@ plot_mcmc_density(samples_mcmc)
 # models. Let's do that now:
 
 # model assessment
-# plot(lm.noses) works but less gg-y
+# plot(lm.noses2) works but less gg-y
 ggResidpanel::resid_panel(lm.noses2, plots = c("resid", "qq", "ls"), nrow = 1, smoother = TRUE)
 
 # we can create the same plots from nimble, but it will take more work and a deeper
