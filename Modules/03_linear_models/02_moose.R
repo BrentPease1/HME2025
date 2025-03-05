@@ -81,7 +81,7 @@ nimConsts <- list(nObs = nrow(moose),
 
 nimInits <- list(B0 = rnorm(1,0,10),
                  B1 = rnorm(1,0,10),
-                 y.new = rbinom(n = nimConsts$nObs, 1, 0.5))
+                 y.new = rep(0, nimConsts$nObs))
 # monitors
 keepers <- c('B0', 'B1', 'fit', 'fit.new')
 
@@ -114,4 +114,4 @@ MCMCsummary(object = m1mcmc$samples, round = 2, params = c('B0', 'B1'))
 
 
 MCMCplot(object = m1mcmc$samples, 
-         params = c('B0', 'B1'))
+         params = c('B1'))
