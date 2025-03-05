@@ -84,9 +84,9 @@ keepers <- c('B0', 'B1', 'sig')
 
 # MCMC Settings
 nc = 3
-nb = 200000
-ni = 1000000 + nb
-nt = 200
+nb = 200
+ni = 1000 + nb
+nt = 1
 
 # get posteriors
 nim.noses <- nimbleMCMC(code = m1,
@@ -276,6 +276,11 @@ m1 <- nimbleCode({
 keepers <- c('B0', 'B1', 'sig', "residual", "mu", "manual.sig", "fit.obs",
              'fit.new')
 
+nimInits <- list(B0 = rnorm(1,0,10),
+                 B1 = rnorm(1,0,10),
+                 tau = rgamma(1,1,1),
+                 y.new = rnorm(n = nimConsts$nObs, mean = mean(LionNoses$age), sd = sd(LionNoses$age)))
+
 # get posteriors
 nim.noses <- nimbleMCMC(code = m1,
                         constants = nimConsts,
@@ -311,6 +316,14 @@ WVPlots::ShadedDensity(frame = fit.stats,
            label="Better fit to observed data")+
   annotate("text", x=-40, y = 0.005,
            label="Better fit to simulated data")
+
+
+# Basic Kery plot
+lim <- c(0, max(fit.stats[[2]])+10)
+plot(fit.stats[[1]], fit.stats[[2]], main =  "Graphical posterior
+predictive check", las =  1, xlab = "SSQ for actual data set", ylab = "SSQ for ideal
+(new) data sets", xlim = lim, ylim = lim)
+abline(0, 1)
 
 ## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -430,7 +443,7 @@ ggplot(mcmc_plot, aes(x = pred.black, y = mean.pred)) +
 ## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-# Stone age robustness analysis
+# Stone age robustness analysis ####
 ## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 # too long of a name
