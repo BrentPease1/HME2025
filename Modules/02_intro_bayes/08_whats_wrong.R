@@ -7,6 +7,7 @@ model <- nimbleCode({
 
   ## Priors ##
   pop.mean ~ dnorm(0, sd = 100) # still flat 'uninformative', but draws from a random normal
+  
   prec ~ dgamma(0.1, 0.1)
   pop.sd <- sqrt(1/prec)
   
@@ -39,7 +40,7 @@ nt = 1
 
 
 bird_samples <- nimbleMCMC(
-  code = bird_model, 
+  code = model, 
   constants = bird_constants,
   data = bird_data,
   inits = inits,
