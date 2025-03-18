@@ -44,6 +44,8 @@ ggplot(moose, aes(voc,observed))+
   ylab("Detection = 1") + 
   theme_bw()
 
+
+
 m2<- nimbleCode({
   
   # priors
@@ -87,8 +89,8 @@ keepers <- c('B0', 'B1', 'fit', 'fit.new')
 
 # MCMC Settings
 nc = 3
-nb = 200
-ni = 1000 + nb
+nb = 2000
+ni = 10000 + nb
 nt = 1
 
 # get posteriors
@@ -115,3 +117,27 @@ MCMCsummary(object = m1mcmc$samples, round = 2, params = c('B0', 'B1'))
 
 MCMCplot(object = m1mcmc$samples, 
          params = c('B1'))
+
+
+# look at fit statistics
+fit.stats <- MCMCpstr(m1mcmc$samples, params = c("fit", "fit.new"), type = "chains")
+
+T.extreme <- fit.stats$fit.new >= fit.stats$fit
+(p.val <- mean(T.extreme)) #checks out
+
+
+# 1 continuous and 1 categorical ####
+moose$year <- as.factor(moose$year)
+moose$grpsizefac <- as.factor(moose$grpsize)
+
+mod2 <- glm(observed ~ voc + year, data = moose, family = binomial())
+summary(mod2)
+
+mod2 <- glm(observed ~ -1 + voc + year, data = moose, family = binomial())
+summary(mod2)
+
+mod3 <- glm(observed ~ -1 + voc*year, data = moose, family = binomial())
+summary(mod3)
+
+mod4 <- glm(observed ~ -1 + voc*grpsizefac, data = moose, family = binomial())
+summary(mod4)
