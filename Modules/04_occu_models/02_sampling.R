@@ -103,7 +103,7 @@ summary(umf)                     # Summarize UMF
 c(B0, B1, alpha0, alpha1, alpha2)
 
 # get on prob scale
-backTransform(fm2, 'state') # doesn't work
+# backTransform(fm2, 'state') # doesn't work
 lc <- linearComb(fm2, c(1, 0), type="state") # Estimate occupancy on the log scale when forest=0
 backTransform(lc)                           
 # truth
@@ -225,7 +225,7 @@ ggplot(holder, aes(rep, psi_max_mean)) +
   geom_errorbar(aes(ymin = psi_max_low, ymax = psi_max_high)) +
   geom_hline(yintercept = plogis(B0 + B1*max(forest)), linewidth = 1, col = 'red')+
   labs(x = "Replicate", y = "Predicted Occurence") +
-  ggtitle("Estimated Occupancy Prob when forest = max(forest") +
+  ggtitle("Estimated Occupancy Prob when forest = max(forest)") +
   theme_minimal()
 
 # how many times did 95% CI cover true effect of forest cover
@@ -388,10 +388,11 @@ for(b in 1:length(B0_values)){
 }
 # stuff for plotting
 holder$group <- paste(holder$n_sites, holder$b0, holder$alpha, sep = '_')
+
 intercepts <- holder %>%
+  mutate(true_psi = plogis(B0_values[b0])) %>%  # Convert true b0 values
   group_by(group) %>%
-  summarize(plogis(b0)) %>%
-  filter(!duplicated(group))
+  summarize(true_psi = first(true_psi))
 
 # talk about this
 holder <- holder %>%
@@ -407,13 +408,13 @@ ggplot(holder, aes(rep, forest_est)) +
 ggplot(holder, aes(rep, psi_mean)) + 
   geom_point() + 
   geom_errorbar(aes(ymin = psi_low, ymax = psi_high)) +
-  geom_hline(data = intercepts, aes(yintercept = `plogis(b0)`), linewidth = 1, col = 'red') +
+  geom_hline(data = intercepts, aes(yintercept = true_psi), linewidth = 1, col = 'red') +
   facet_wrap(~group)
 # est of occupancy at forest=max(forest)
 ggplot(holder, aes(rep, psi_max_mean)) + 
   geom_point() + 
   geom_errorbar(aes(ymin = psi_max_low, ymax = psi_max_high)) +
-  geom_hline(data = intercepts, aes(yintercept = `plogis(b0)`), linewidth = 1, col = 'red') +
+  geom_hline(data = intercepts, aes(yintercept = true_psi), linewidth = 1, col = 'red') +
   facet_wrap(~group)
 
 
