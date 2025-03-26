@@ -175,7 +175,7 @@ nimConsts <- list(nObs = nrow(moose),
                   year = as.numeric(moose$year)) # consecutive integers!!
 
 nimInits <- list(B0 = rnorm(1,0,10),
-                 B1 = c(NA, rep(rnorm(1,0,10),2))) # important
+                 B1 = c(NA, rnorm(2,0,10))) # important
 # monitors
 keepers <- c('B0', 'B1')
 
