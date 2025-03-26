@@ -52,6 +52,7 @@ m1 <- nimbleCode({
     for (j in 1:J) { # Loop over replicate surveys
       y[i,j] ~ dbern(mu[i])
     }
+    
      mu[i] <- z[i]*p  
   }
 })
