@@ -48,18 +48,20 @@ print(z)
 z <- apply(z, 2, get1)
 
 # Draw observations using Theta
+y <- matrix(data = NA, nrow = nsites, ncol = nsurveys)
 for(i in 1:nsites){
   y[i, ] <- apply(rmultinom(nsurveys, 1, Theta[z[i], ]), 2, get1)
 }
 
-
+cbind(y, z)
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --  
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --  
 
 # OKAY, we have observations (y) 
 # and we know truth z (and associated probabilities - let's try to recover those)
 
-# if you can simulate the data, you can write the BUGS model
+# if you can simulate the data, you can write the BUGS model!!
+
 # Define the NIMBLE model
 ms1 <- nimbleCode({
   
@@ -69,8 +71,8 @@ ms1 <- nimbleCode({
   p2 ~ dunif(0, 1)
   
   # Multinomial logit link for observation model for state 3 (= pair)
-  lp32 ~ dnorm(0, 0.001)
-  lp33 ~ dnorm(0, 0.001)
+  lp32 ~ dnorm(0, sd = 10)
+  lp33 ~ dnorm(0, sd = 10)
   p32 <- exp(lp32) / (1 + exp(lp32) + exp(lp33))
   p33 <- exp(lp33) / (1 + exp(lp32) + exp(lp33))
   p31 <- 1-p32-p33                     # Nondetection prob for pairs by difference
