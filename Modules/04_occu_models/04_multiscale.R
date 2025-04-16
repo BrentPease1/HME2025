@@ -40,8 +40,6 @@ multiscale1 <- nimbleCode({
   for(t in 1:n.surveys){
     int.p[t] ~ dunif(0,1)  # Intercepts detection probability 
   }
-  
-  # regression coefficients / effects of covariates
   beta.lpsi ~ dnorm(0, sd = 10)  # Slopes of three covariates
   beta.ltheta ~ dnorm(0, sd = 10)
   beta.lp ~ dnorm(0, sd = 10)
@@ -59,7 +57,7 @@ multiscale1 <- nimbleCode({
       logit(theta[i,j]) <- logit(int.theta[j]) + beta.ltheta * covB[i,j]
       
       for (k in 1:n.surveys){
-        # PCR detection error process in sample k
+        # detection error process in sample k
         y[i,j,k] ~ dbern(mu.y[i,j,k])
         mu.y[i,j,k] <- a[i,j] * p[i,j,k]
         logit(p[i,j,k]) <- logit(int.p[k]) + beta.lp * covC[i,j,k]
@@ -100,8 +98,7 @@ inits <- list(z = zst,
 
 
 # Parameters monitored
-keepers <- c("int.p", "int.theta", "int.psi", "beta.lp",
-             "beta.ltheta", "beta.lpsi", "sum.z", "sum.a", "mean.int.theta")
+keepers <- c("int.p", "int.theta", "int.psi", "beta.lp", "beta.ltheta", "beta.lpsi", "sum.z", "sum.a", "mean.int.theta")
 
 mscale1 <- nimbleMCMC(code = multiscale1,
                   data = nimData,
