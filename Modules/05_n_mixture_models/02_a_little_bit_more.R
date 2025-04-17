@@ -22,7 +22,8 @@ vegHt <- sort(runif(M, -1, 1)) # sort for graphical convenience
 # Choose parameter values for abundance model and compute lambda
 beta0 <- 0                    # Log-scale intercept
 beta1 <- 2                    # Log-scale slope for vegHt
-lambda <- exp(beta0 + beta1 * vegHt) # Expected abundance
+beta2 <- 0.69
+lambda <- exp(beta0 + beta1 * vegHt + beta2 * vegHt^2) # Expected abundance
 plot(vegHt, lambda, type = "l", lwd = 3)  # Expected abundance
 
 # Draw local abundance and look at data so far
@@ -67,8 +68,8 @@ hab <- c(rep("A", 33), rep("B", 33), rep("C", 34))  # assumes M = 100
 # Load unmarked, format data in unmarked data frame and summarize
 umf <- unmarkedFramePCount(
   y=C,                                            # Counts matrix
-  siteCovs= data.frame(vegHt = vegHt, hab = hab), # Site covariates
-  obsCovs = list(time = time, wind = wind))       # Observation covs
+  siteCovs= data.frame(vegHt = vegHt), # Site covariates
+  obsCovs = list(wind = wind))       # Observation covs
 summary(umf)
 
 
@@ -83,19 +84,17 @@ summary(fm.Nmix1 <- pcount(~wind ~vegHt, data=umf, control=list(trace=T, REPORT=
 # Specify model in BUGS language
 nmix2 <- nimbleCode({
   # Priors
-  for(k in 1:3){                # Loop over 3 levels of hab or time factors
-    alpha0[k] ~ dunif(-10, 10) # Detection intercepts
-    alpha1[k] ~ dunif(-10, 10) # Detection slopes
-    beta0[k] ~ dunif(-10, 10)  # Abundance intercepts
-    beta1[k] ~ dunif(-10, 10)  # Abundance slopes
-  }
-  
+    alpha0 ~ dunif(-10, 10) # Detection intercept
+    alpha1 ~ dunif(-10, 10) # Detection slope
+    beta0 ~ dunif(-10, 10)  # Abundance intercept
+    beta1 ~ dunif(-10, 10)  # Abundance slope
+    
   # Likelihood
   # Ecological model for true abundance
   for (i in 1:M){
     N[i] ~ dpois(lambda[i])
-    log(lambda[i]) <- beta0[hab[i]] + beta1[hab[i]] * vegHt[i]
-    
+    log(lambda[i]) <- beta0 + beta1 * vegHt[i]
+
     # Some intermediate derived quantities
     critical[i] <- step(2-N[i])# yields 1 whenever N is 2 or less
     z[i] <- step(N[i]-0.5)     # Indicator for occupied site
@@ -103,17 +102,14 @@ nmix2 <- nimbleCode({
     # Observation model for replicated counts
     for (j in 1:J){
       C[i,j] ~ dbin(p[i,j], N[i])
-      logit(p[i,j]) <- alpha0[j] + alpha1[j] * wind[i,j]
+      logit(p[i,j]) <- alpha0 + alpha1 * wind[i,j]
     }
   }
   
   # Derived quantities
   Nocc <- sum(z[1:M])         # Number of occupied sites among sample of M
   Ntotal <- sum(N[1:M])       # Total population size at M sites combined
-  Nhab[1] <- sum(N[1:33])  # Total abundance for sites in hab A
-  Nhab[2] <- sum(N[34:66]) # Total abundance for sites in hab B
-  Nhab[3] <- sum(N[67:100])# Total abundance for sites in hab C
-  
+
   N.critical <- sum(critical[1:M]) # Number of populations with critical size
   meta.pop.risk <- N.critical > 74 # proportion which N.critical >= 75
   
@@ -124,24 +120,23 @@ nmix2 <- nimbleCode({
 Nst <- apply(C,1,max)
 
 nimInits <- list(N = Nst,
-                 alpha0 = rnorm(3), 
-                 alpha1 = rnorm(3), 
-                 beta0 = rnorm(3), 
-                 beta1 = rnorm(3))
+                 alpha0 = rnorm(1), #runif(1, -10, 10) #runif(1, -1, 1)
+                 alpha1 = rnorm(1), 
+                 beta0 = rnorm(1), 
+                 beta1 = rnorm(1))
 
 
 # Parameters monitored
 keepers <- c("alpha0", "alpha1", "beta0",
             "beta1", "Nocc", "Ntotal",
-            "Nhab", "N.critical", "meta.pop.risk") 
+            "N.critical", "meta.pop.risk") 
 
 
 nimData <- list(C = C)
 nimConsts <- list(M = nrow(C),
                   J = ncol(C),
                   wind = wind,
-                  vegHt = vegHt,
-                  hab = as.numeric(factor(hab))) 
+                  vegHt = vegHt) 
 
 
 
@@ -150,9 +145,9 @@ nmix2nim <- nimbleMCMC(code = nmix2,
                        constants = nimConsts,
                        monitors = keepers,
                        inits = nimInits,
-                       niter = 22000,
+                       niter = 12000,
                        nburnin = 2000,
-                       thin = 10,
+                       thin = 1,
                        nchains = 3) 
 
 # look at output
